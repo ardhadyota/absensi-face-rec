@@ -36,10 +36,18 @@ DATASET_DIR = "dataset_wajah"
 
 @st.cache_resource
 def load_cascade():
+    # Mengunduh otomatis file pendeteksi wajah dari repositori resmi OpenCV
+    url = "https://raw.githubusercontent.com/opencv/opencv/master/data/haarcascades/haarcascade_frontalface_default.xml"
     xml_path = "haarcascade_frontalface_default.xml"
-    # Jika file berada di folder Absensi atau root
+    
     if not os.path.exists(xml_path):
-        xml_path = os.path.join(os.path.dirname(__file__), "haarcascade_frontalface_default.xml")
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req) as response, open(xml_path, 'wb') as out_file:
+                out_file.write(response.read())
+        except Exception as e:
+            st.error(f"Gagal mengunduh file cascade: {e}")
+            
     return cv2.CascadeClassifier(xml_path)
 
 face_cascade = load_cascade()
