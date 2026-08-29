@@ -37,9 +37,9 @@ DATASET_DIR = "dataset_wajah"
 @st.cache_resource
 def load_cascade():
     xml_path = "haarcascade_frontalface_default.xml"
+    # Jika file berada di folder Absensi atau root
     if not os.path.exists(xml_path):
-        url = "https://raw.githubusercontent.com/opencv/opencv/master/data/haarcascades/haarcascade_frontalface_default.xml"
-        urllib.request.urlretrieve(url, xml_path)
+        xml_path = os.path.join(os.path.dirname(__file__), "haarcascade_frontalface_default.xml")
     return cv2.CascadeClassifier(xml_path)
 
 face_cascade = load_cascade()
